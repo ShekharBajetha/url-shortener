@@ -1,0 +1,32 @@
+# Java
+*.class
+*.jar
+*.war
+*.log
+
+# Maven
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/
+
+# IntelliJ
+.idea/
+*.iml
+
+# OS
+.DS_Store
+
+# Redis dump (if any)
+dump.rdb
+
+# PostgreSQL
+*.pgsql
+
+# Logs
+*.log
+
+# Spring Boot devtools
+.spring-boot-devtools.properties
+
+# Env files
+.env
