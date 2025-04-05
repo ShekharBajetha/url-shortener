@@ -2,8 +2,11 @@ package com.example.urlshortener.controller;
 
 import com.example.urlshortener.service.UrlShortenerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/")
@@ -27,6 +30,16 @@ public class UrlShortenerController {
                     .build();
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+    @GetMapping("/analytics/{shortCode}")
+    public ResponseEntity<?> getClickCount(@PathVariable String shortCode) {
+        Integer clickCount = service.getClickCount(shortCode);
+
+        if (clickCount != null) {
+            return ResponseEntity.ok().body(clickCount);  // Directly return the click count value
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Short URL not found");
         }
     }
 }

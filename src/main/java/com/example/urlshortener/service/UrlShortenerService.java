@@ -80,4 +80,32 @@ public class UrlShortenerService {
                 })
                 .orElseThrow(() -> new UrlNotFoundException("Short URL not found"));
     }
+    public Integer getClickCount(String shortCode) {
+        // Try to get the click count from Redis cache first
+        String clickCountFromCache = redis.opsForValue().get(shortCode + ":clickCount");
+
+        if (clickCountFromCache != null) {
+            // If cache hit, return the cached value (convert it to int)
+            return Integer.parseInt(clickCountFromCache);
+        } else {
+            // If not in cache, fetch it from the database
+            Optional<UrlMapping> urlMappingOpt = urlRepo.findByShortCode(shortCode);
+
+            if (urlMappingOpt.isPresent()) {
+                UrlMapping urlMapping = urlMappingOpt.get();
+
+                // Store the click count in cache for future use (TTL can be added if needed)
+                redis.opsForValue().set(shortCode + ":clickCount", String.valueOf(urlMapping.getClickCount()));
+
+                // Return the click count from database
+                return urlMapping.getClickCount();
+            } else {
+                // Handle the case when the shortCode doesn't exist
+                throw new UrlNotFoundException("Short URL not found: " + shortCode);
+            }
+        }
+    }
+
+
+
 }
